@@ -12,6 +12,8 @@ $(document).ready(function () {
     $('#userList table tbody').on('click', 'td a.linkshowuser', showUserInfo);
     $('#btnAddUser').on('click', addUser);
     $('#userList table tbody').on('click', 'td a.linkdeleteuser', deleteUser);
+    $('#userList table tbody').on('click', 'td a.linkupdateuser', showUpdateDialog);
+    $('#btnUpdateUser').on('click', updateUser);
 });
 
 // Functions
@@ -30,6 +32,7 @@ function populateTable() {
             tableContent += '<tr>';
             tableContent += '<td><a href="#" class="linkshowuser" rel="' + this.username + '">' + this.username + '</a></td>';
             tableContent += '<td>' + this.email + '</td>';
+            tableContent += '<td><a href="#" class="linkupdateuser" rel="' + this._id + '">edit</a></td>';
             tableContent += '<td><a href="#" class="linkdeleteuser" rel="' + this._id + '">delete</a></td>';
             tableContent += '</tr>';
         });
@@ -133,4 +136,62 @@ function deleteUser (event) {
         // Do Nothing if they said no
         return false;
     }
+}
+
+
+function showUpdateDialog (event) {
+    event.preventDefault();
+
+    // Change title of add form to edit form
+    var userName = $(this).parents('tr').find('.linkshowuser').text();
+    var userID = $(this).attr('rel');
+
+    $('h2#formUser').text("Update User: " + userName );
+
+    // hide add btn
+    $('#btnAddUser').hide();
+
+    // show update button and set id to edit
+    $('#btnUpdateUser').attr('rel', userID);
+    $('#btnUpdateUser').show();
+
+
+}
+
+function updateUser ( event ) {
+    event.preventDefault();
+
+    var userID = $('#btnUpdateUser').attr('rel');
+
+    var userData = {
+        'username': $('#addUser fieldset input#inputUserName').val(),
+        'email': $('#addUser fieldset input#inputUserEmail').val(),
+        'fullname': $('#addUser fieldset input#inputUserFullname').val(),
+        'age': $('#addUser fieldset input#inputUserAge').val(),
+        'location': $('#addUser fieldset input#inputUserLocation').val(),
+        'gender': $('#addUser fieldset input#inputUserGender').val()
+    };
+
+    $.ajax({
+        type: 'PUT',
+        url: '/users/updateuser/' + userID,
+        data: userData,
+        dataType: 'JSON'
+    }).done(function (response) {
+
+        console.log(response.msg);
+
+        if (response.msg === '') {
+            $('#addUser fieldset input').val('');
+            populateTable();
+
+            // Get everything back to normal
+            $('h2#formUser').text("Add User");
+            $('#btnAddUser').show();
+            $('#btnUpdateUser').hide();
+
+        } else {
+            alert("Error: " + response.msg);
+        }
+    });
 }

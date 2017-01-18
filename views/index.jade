@@ -31,12 +31,13 @@ block content
                 thead
                     th UserName
                     th Email
+                    th Update
                     th Delete?
                 tbody
         // /User List
 
         // Add User
-        h2 Add User
+        h2#formUser Add User
         #addUser
             fieldset
                 input#inputUserName(type='text', placeholder='User Name')
@@ -49,5 +50,7 @@ block content
                 input#inputUserGender(type='text',  placeholder='Gender')
                 br
                 button#btnAddUser Add User
+                button#btnUpdateUser Edit User
         // /Add User
+
     // /Wrapper
