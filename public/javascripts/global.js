@@ -9,10 +9,13 @@ $(document).ready(function () {
     // Populate the user table on initial page load
     populateTable();
 
-    $('#userList table tbody').on('click', 'td a.linkshowuser', showUserInfo);
+    var userListTable = $('#userList').find('table tbody');
+
+    userListTable.on('click', 'td a.linkshowuser', showUserInfo);
+    userListTable.on('click', 'td a.linkdeleteuser', deleteUser);
+    userListTable.on('click', 'td a.linkupdateuser', showUpdateDialog);
+
     $('#btnAddUser').on('click', addUser);
-    $('#userList table tbody').on('click', 'td a.linkdeleteuser', deleteUser);
-    $('#userList table tbody').on('click', 'td a.linkupdateuser', showUpdateDialog);
     $('#btnUpdateUser').on('click', updateUser);
 });
 
@@ -38,7 +41,7 @@ function populateTable() {
         });
 
         // Injecting the whole content string into our existing HTML table
-        $('#userList table tbody').html(tableContent);
+        $('#userList').find('table tbody').html(tableContent);
     });
 }
 
@@ -182,7 +185,7 @@ function updateUser ( event ) {
         console.log(response.msg);
 
         if (response.msg === '') {
-            $('#addUser fieldset input').val('');
+            $('#addUser').find('fieldset input').val('');
             populateTable();
 
             // Get everything back to normal
